@@ -27,11 +27,11 @@ public class BuildingGenerator : MonoBehaviour {
 		int orientation = Random.Range(0,3); //0 - North (z+), 1 - East(x+), 2 - South (z-), 3 - West (x-)
 		int numWindows;
 		Vector3 footprint = new Vector3(
-			Map(Random.value,0f,1f,15f,45f), 
-			(float) Random.Range(9,12),
-			Map(Random.value,0f,1f,20f,45f));
+			Map(Random.value,0f,1f,10f,25f), 
+			(float) Random.Range(3,4),
+			Map(Random.value,0f,1f,12f,40f));
 		
-		newBuilding = GameObject.Instantiate(buildingPrefabs[0]);
+		newBuilding = GameObject.Instantiate(buildingPrefabs[0]); // This would be where you could have different styles of building generated
 		newBuilding.transform.position = new Vector3(0,(numFloors*footprint.y)/2);
 		newBuilding.GetComponent<BoxCollider>().size = new Vector3(footprint.x,(numFloors*footprint.y),footprint.z);
 
@@ -45,7 +45,23 @@ public class BuildingGenerator : MonoBehaviour {
 
 		GameObject door = GameObject.Instantiate(doorPrefabs[0]);
 		door.transform.parent = newBuilding.transform;
-		door.transform.localScale = new Vector3(1f, 2f, 1f);
+
+		Vector3 newDoorPosition = door.transform.position;
+		if(orientation % 2 == 0){
+			door.transform.localScale = new Vector3(1f, 2f, 0.2f);
+			newDoorPosition.z = footprint.z/2;
+			if(orientation == 2){
+				newDoorPosition.z *= -1;
+			}
+		} else {
+			door.transform.localScale = new Vector3(0.2f, 2f, 1f);
+			newDoorPosition.x = footprint.x/2;
+			if(orientation == 3){
+				newDoorPosition.x *= -1;
+			}
+		}
+		newDoorPosition.y = door.transform.localScale.y/2;
+		door.transform.position = newDoorPosition;
 
 		return newBuilding;
 	}
